@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} main page {% endblock %}
+
+{% block content %}
+    <div class="container">
+    <form method="POST">
+        <div>
+            <input type="email" placeholder="email" name="email">
+        </div>
+        <div>
+            <input type="text" placeholder="username" name="username">
+        </div>
+        <div>
+            <input type="password" placeholder="password" name="password">
+        </div>
+        <button type="submit" class="btn btn-success">register</button>
+        {% if error %}
+        <div class="alert alert-danger"> {{error}} </div>
+        {% endif %}
+    </form>
+    </div>
+{% endblock %}

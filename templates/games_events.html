@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %} Games {% endblock %}
+
+{% block content %}
+
+{% if session.get('username') %}
+    <form method="POST">
+        {% if not start %}
+        <div class="container">
+            <button type="submit" name="action" value="start" class="btn btn-success" >Start</button>
+        </div>
+        {% endif %}
+
+     </form>
+{% else %}
+    <div>
+        <h1> Зареєструйтеся для створення ігор </h1>
+    </div>
+{% endif %}
+<form method="POST">
+    {% if start %}
+
+        <div class="container">
+            <div>
+                <input type="text" placeholder="name_event" name="name_event"> <br>
+                <textarea type="text" placeholder="info" name="info"></textarea> <br>
+                Date start: <input type="date" name="start_date"><br>
+                Date end: <input type="date" name="end_date"><br>
+            </div>
+            <div class="container">
+                <button type="submit" name="action" value="create" class="btn btn-success" >Create</button>
+            </div>
+
+        </div>
+
+    {% endif %}
+</form>
+{% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+{% if events %}
+    <div>
+        <ul>
+            {% for name, date in events %}
+                <li>{{ name }} — {{ date }}</li>
+            {% endfor %}
+
+        </ul>
+    </div>
+{% endif %}
+{% endblock %}

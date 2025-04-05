@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+     <style>
+      html, body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      main {
+        flex: 1 0 auto; /* розтягуємо головний вміст */
+      }
+      footer {
+        flex-shrink: 0; /* футер залишається «прикоріненим» знизу */
+      }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+
+        <div class="container">
+            <a class="navbar-brand" href="#">PovidloGames</a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Main</a></li>
+                <li class="nav-item"><a class="nav-link" href="/games-events">Games</a></li>
+                {% if session.get('username') %}
+                <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="/register">Registration</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                {% endif %}
+
+            </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %} {% endblock %}
+    </main>
+
+    <footer class="bg-light py-3" id="contacts">
+        <div class="container text-center">
+            <div class="col-md-4 d-flex align-items-center">
+              <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+                <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
+              </a>
+              <span class="mb-3 mb-md-0 text-body-secondary">© Logika</span>
+            </div>
+
+            <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+              <li class="ms-3"><a class="text-body-secondary" href="https://t.me/YaroslavDa"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"><i class="bi bi-telegram"></i></use></svg></a></li>
+              <li class="ms-3"><a class="text-body-secondary" href="https://www.instagram.com/yarodani3/"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"><i class="bi bi-instagram"></i></use></svg></a></li>
+            </ul>
+        </div>
+    </footer>
+
+</body>
+</html>
