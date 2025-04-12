@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ name_event }} {% endblock %}
+
+{% block content %}
+  <h2>{{ name_event }}</h2>
+  <p>{{ info_event }}</p>
+  <p>{{ start_date }} - {{ end_date }}</p>
+  <p>{{ name_author }}</p>
+
+  <button>Join</button>
+{% endblock %}

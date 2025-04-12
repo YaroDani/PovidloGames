@@ -109,40 +109,62 @@ def validate_date(start_date, end_date):
         return error
 
 
+def validate_name(name_event):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id FROM events WHERE name_events = ?', (name_event,))
+    result = cursor.fetchone()
+    if result:
+        return False
+    return True
+
+
 @app.route('/games-events', methods=['POST', 'GET'])
 def games():
     start = None
     error = None
+
     if request.method == 'POST':
         action = request.form.get('action')
+
         if action == 'start':
             start = True
+
         if action == 'create':
             name_event = request.form.get('name_event')
             info = request.form.get('info')
             start_date = request.form.get('start_date')
             end_date = request.form.get('end_date')
-            if validate_date(start_date, end_date):
-                conn = get_db_connection()
-                cursor = conn.cursor()
-                cursor.execute('SELECT id FROM users WHERE email=?', (session['email'],))
-                user = cursor.fetchone()
-                if not user:
-                    conn.close()
-                    return redirect(url_for('login'))
-                else:
-                    user_id = user[0]
 
-                if name_event and start_date and end_date:
-                    cursor.execute(
-                        "INSERT INTO events (name_events, info, start_date, end_date, user_id) VALUES (?, ?, ?, ?, ?)",
-                        (name_event, info, start_date, end_date, user_id))
-                    conn.commit()
-                    conn.close()
+            if validate_name(name_event):
+                if validate_date(start_date, end_date):
+                    conn = get_db_connection()
+                    cursor = conn.cursor()
+
+                    cursor.execute('SELECT id FROM users WHERE email=?', (session['email'],))
+                    user = cursor.fetchone()
+
+                    if not user:
+                        conn.close()
+                        return redirect(url_for('login'))
+                    else:
+                        user_id = user[0]
+
+                    if name_event and start_date and end_date:
+                        cursor.execute(
+                            "INSERT INTO events (name_events, info, start_date, end_date, user_id) VALUES (?, ?, ?, ?, ?)",
+                            (name_event, info, start_date, end_date, user_id)
+                        )
+                        conn.commit()
+                        conn.close()
+                    else:
+                        error = 'Будь ласка перевірте чи всі поля заповнені'
                 else:
-                    error = 'Будь ласка перевірте чи всі поля заповнені'
+                    error = 'Дата неправильна'
             else:
-                error = 'Дата неправильна'
+                error = 'Event already created'
+
+
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -150,6 +172,18 @@ def games():
     events = cursor.fetchall()
     conn.close()
     return render_template('games_events.html', start=start, error=error, events=events)
+
+@app.route('/event-<event_name>', methods=['POST', 'GET'])
+def event_page(event_name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name_events, info, start_date, end_date, user_id FROM events WHERE name_events = ?",
+                   (event_name,))
+    events = cursor.fetchall() # id_user [0][4]
+
+    username = cursor.execute("SELECT username FROM users WHERE id = ?", (events[0][4], ))
+    username = username.fetchone()
+    return render_template('eventpage.html',name_author=username[0], name_event=event_name, info_event=events[0][1], start_date=events[0][2], end_date=events[0][3])
 
 
 '''
