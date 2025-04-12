@@ -1,22 +1,40 @@
 {% extends 'base.html' %}
 
-{% block title %} main page {% endblock %}
+{% block title %}Main Page{% endblock %}
 
 {% block content %}
-    <div class="container">
-    <form method="POST">
-        <div>
-            <input type="email" placeholder="email" name="email">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-center">
+                    <h4>Login to Your Account</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Log In</button>
+                        </div>
+
+                        {% if error %}
+                        <div class="alert alert-danger mt-3 text-center">
+                            {{ error }}
+                        </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
         </div>
-        <div>
-            <input type="password" placeholder="password" name="password">
-        </div>
-        <button type="submit" class="btn btn-success">login</button>
-        {% if error %}
-        <div
-                class="alert alert-danger">{{error}}
-        </div>
-        {% endif %}
-    </form>
     </div>
+</div>
 {% endblock %}

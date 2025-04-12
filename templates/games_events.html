@@ -1,51 +1,95 @@
 {% extends 'base.html' %}
-{% block title %} Games {% endblock %}
+{% block title %}Games{% endblock %}
 
 {% block content %}
-
-{% if session.get('username') %}
-    <form method="POST">
-        {% if not start %}
-        <div class="container">
-            <button type="submit" name="action" value="start" class="btn btn-success" >Start</button>
-        </div>
-        {% endif %}
-
-     </form>
-{% else %}
-    <div>
-        <h1> Зареєструйтеся для створення ігор </h1>
-    </div>
-{% endif %}
-<form method="POST">
-    {% if start %}
-
-        <div class="container">
-            <div>
-                <input type="text" placeholder="name_event" name="name_event"> <br>
-                <textarea type="text" placeholder="info" name="info"></textarea> <br>
-                Date start: <input type="date" name="start_date"><br>
-                Date end: <input type="date" name="end_date"><br>
-            </div>
-            <div class="container">
-                <button type="submit" name="action" value="create" class="btn btn-success" >Create</button>
-            </div>
-
-        </div>
-
-    {% endif %}
-</form>
-{% if error %}
-                <div class="alert alert-danger">{{ error }}</div>
+<div class="container my-4">
+    {% if session.get('username') %}
+        <form method="POST">
+            {% if not start %}
+                <div class="mb-3">
+                    <button type="submit" name="action" value="start" class="btn btn-success">Start</button>
+                </div>
             {% endif %}
-{% if events %}
-    <div>
-        <ul>
-            {% for name, date in events %}
-                <li>{{ name }} — {{ date }}</li>
-            {% endfor %}
+        </form>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Зареєструйтеся для створення ігор</h4>
+            <p>Щоб створювати ігри, вам необхідно увійти або зареєструватися.</p>
+        </div>
+    {% endif %}
 
-        </ul>
-    </div>
-{% endif %}
+    <form method="POST">
+        {% if start %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Create new event</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="name_event" class="form-label">Name event</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="name_event"
+                            name="name_event"
+                            placeholder="Type name game event:">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="info" class="form-label">Description</label>
+                        <textarea
+                            class="form-control"
+                            id="info"
+                            name="info"
+                            rows="3"
+                            placeholder="Type info about game event"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="start_date" class="form-label">Choose data start</label>
+                            <input
+                                type="date"
+                                class="form-control"
+                                id="start_date"
+                                name="start_date">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="end_date" class="form-label">Choose data end</label>
+                            <input
+                                type="date"
+                                class="form-control"
+                                id="end_date"
+                                name="end_date">
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" name="action" value="create" class="btn btn-success">
+                            Create
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </form>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% if events %}
+        <div class="mt-4">
+            <h5>List event</h5>
+            <ul class="list-group">
+                {% for name, date in events %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="/event-{{ name }}">{{ name }}</a>
+                        <span class="badge bg-primary rounded-pill">{{ date }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
