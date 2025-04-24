@@ -31,7 +31,7 @@ def register():
             cursor.execute("SELECT * FROM users WHERE email=?", (email,))  # отримати всі елементи з email
             user = cursor.fetchone()
             if user:
-                error = 'Такий користувач вже існує'
+                error = 'User already exists'
                 conn.close()
             else:
                 cursor.execute("INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
@@ -46,7 +46,7 @@ def register():
     return render_template('register.html', error=error)
 
 
-@app.route('/login', methods=['POST', 'GET'])  # сторінка logika.com/login
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     error = None
     if request.method == 'POST':
@@ -66,16 +66,25 @@ def login():
                     session['email'] = user[1]
                     return redirect(url_for('home'))
                 else:
-                    error = 'Пароль'
+                    error = 'Password error'
             else:
-                error = 'Пошта'
+                error = 'Email error'
 
     return render_template('login.html', error=error)
 
 
 @app.route('/home', methods=['POST', 'GET'])
 def home():
-    return render_template('home.html', username=session['username'], email=session['email'])
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id FROM users WHERE email = ?', (session['email'],))
+    user_id = cursor.fetchone()
+    print(user_id)
+    cursor.execute("SELECT name_events, start_date FROM events WHERE user_id=?", (user_id[0],))
+    events = cursor.fetchall()
+    conn.close()
+    return render_template('home.html', username=session['username'], email=session['email'], events=events)
 
 
 @app.route('/logout', methods=['POST', 'GET'])
@@ -125,7 +134,7 @@ def games():
     error = None
 
     if request.method == 'POST':
-        action = request.form.get('action')
+        action = request.form.get('start')
 
         if action == 'start':
             start = True
@@ -135,22 +144,21 @@ def games():
             info = request.form.get('info')
             start_date = request.form.get('start_date')
             end_date = request.form.get('end_date')
+            if name_event and info and start_date and end_date:
+                if validate_name(name_event):
+                    if validate_date(start_date, end_date):
+                        conn = get_db_connection()
+                        cursor = conn.cursor()
 
-            if validate_name(name_event):
-                if validate_date(start_date, end_date):
-                    conn = get_db_connection()
-                    cursor = conn.cursor()
+                        cursor.execute('SELECT id FROM users WHERE email=?', (session['email'],))
+                        user = cursor.fetchone()
 
-                    cursor.execute('SELECT id FROM users WHERE email=?', (session['email'],))
-                    user = cursor.fetchone()
+                        if not user:
+                            conn.close()
+                            return redirect(url_for('login'))
+                        else:
+                            user_id = user[0]
 
-                    if not user:
-                        conn.close()
-                        return redirect(url_for('login'))
-                    else:
-                        user_id = user[0]
-
-                    if name_event and start_date and end_date:
                         cursor.execute(
                             "INSERT INTO events (name_events, info, start_date, end_date, user_id) VALUES (?, ?, ?, ?, ?)",
                             (name_event, info, start_date, end_date, user_id)
@@ -158,13 +166,11 @@ def games():
                         conn.commit()
                         conn.close()
                     else:
-                        error = 'Будь ласка перевірте чи всі поля заповнені'
+                        error = 'Wrong data'
                 else:
-                    error = 'Дата неправильна'
+                    error = 'Event already created'
             else:
-                error = 'Event already created'
-
-
+                error = 'Check all lines'
 
     conn = get_db_connection()
     cursor = conn.cursor()

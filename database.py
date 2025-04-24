@@ -24,5 +24,14 @@ CREATE TABLE IF NOT EXISTS events (
 )
 ''')
 
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS joined_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name_events TEXT NOT NULL,
+    user_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES user (id)
+)
+''')
+
 conn.commit()
 conn.close()

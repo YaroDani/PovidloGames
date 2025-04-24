@@ -7,14 +7,14 @@
         <form method="POST">
             {% if not start %}
                 <div class="mb-3">
-                    <button type="submit" name="action" value="start" class="btn btn-success">Start event</button>
+                    <button type="submit" name="start" value="start" class="btn btn-success">Start event</button>
                 </div>
             {% endif %}
         </form>
     {% else %}
         <div class="alert alert-info" role="alert">
-            <h4 class="alert-heading">Зареєструйтеся для створення ігор</h4>
-            <p>Щоб створювати ігри, вам необхідно увійти або зареєструватися.</p>
+            <h4 class="alert-heading">To create events you need to be registrated</h4>
+            <p>To create events you need to be registrate or login.</p>
         </div>
     {% endif %}
 
