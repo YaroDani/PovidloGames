@@ -28,10 +28,16 @@ def register():
         if email and password and username:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM users WHERE email=?", (email,))  # отримати всі елементи з email
-            user = cursor.fetchone()
-            if user:
-                error = 'User already exists'
+            cursor.execute("SELECT email FROM users WHERE email=?", (email,))
+            user_email = cursor.fetchone()
+            cursor.execute("SELECT username FROM users WHERE username=?", (username,))
+            user_name = cursor.fetchone()
+            print(user_email)
+            if user_email:
+                error = 'Email already exists'
+                conn.close()
+            elif user_name:
+                error="username already exists"
                 conn.close()
             else:
                 cursor.execute("INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
