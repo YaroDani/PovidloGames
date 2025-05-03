@@ -1,3 +1,6 @@
+import sqlite3
+
+
 def validate_date(start_date, end_date):
     data_s = list(map(int, start_date.split("-")))
     date_e = list(map(int, end_date.split("-")))

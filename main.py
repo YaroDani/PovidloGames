@@ -14,7 +14,15 @@ app.config['SECRET_KEY'] = '1234'
 
 @app.route('/')  # головна сторінка logika.com
 def main_page():
-    return render_template('index.html')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT role FROM users WHERE email=?", (session["email"],))
+    role=cursor.fetchone()
+    if role[0] == "admin":
+        show_button=True
+    else:
+        show_button=False
+    return render_template('main.html', show_button=show_button)
 
 
 @app.route('/register', methods=['POST', 'GET'])  # сторінка logika.com/register
@@ -40,8 +48,8 @@ def register():
                 error="username already exists"
                 conn.close()
             else:
-                cursor.execute("INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
-                               (email, username, password))
+                cursor.execute("INSERT INTO users (email, username, password, role) VALUES (?, ?, ?, ?)",
+                               (email, username, password, "user"))
                 conn.commit()
                 conn.close()
 
@@ -81,16 +89,20 @@ def login():
 
 @app.route('/home', methods=['POST', 'GET'])
 def home():
-
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('SELECT id FROM users WHERE email = ?', (session['email'],))
     user_id = cursor.fetchone()
-    print(user_id)
+    cursor.execute("SELECT role FROM users WHERE email=?", (session["email"],))
+    role = cursor.fetchone()
     cursor.execute("SELECT name_events, start_date FROM events WHERE user_id=?", (user_id[0],))
     events = cursor.fetchall()
+    # НАЗВИ ІВЕНТІВ ДО ЯКИХ МИ ПРИЄДНАЛИСЯ
+    cursor.execute("SELECT name_events FROM joined_events WHERE user_id=? ", (user_id[0],))
+    joined_events = cursor.fetchall()
+    # отримати дату приєднаних ві
     conn.close()
-    return render_template('home.html', username=session['username'], email=session['email'], events=events)
+    return render_template('home.html', username=session['username'], email=session['email'], events=events, joined_events=joined_events, role=role[0])
 
 
 @app.route('/logout', methods=['POST', 'GET'])
@@ -139,17 +151,36 @@ def games():
     start = None
     error = None
 
+
+
     if request.method == 'POST':
-        action = request.form.get('start')
+        action = request.form.get('start') # 3 value: start, close, create
 
         if action == 'start':
-            start = True
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            cursor.execute('SELECT id,role FROM users WHERE email = ?', (session['email'],))
+            user_info = cursor.fetchone()
+            cursor.execute("SELECT name_events FROM events WHERE user_id=?", (user_info[0],))
+            events = cursor.fetchall()
+            events_count=len(events)
+            print(events_count)
+            print(user_info)
+            if events_count>= 3 and user_info[1]=="user":
+                error = 'You have used all free events creations'
+                start = False
+            else:
+                start = True
+        if action == 'close':
+            start = False
 
         if action == 'create':
             name_event = request.form.get('name_event')
             info = request.form.get('info')
             start_date = request.form.get('start_date')
             end_date = request.form.get('end_date')
+            print(name_event, info, start_date, end_date)
             if name_event and info and start_date and end_date:
                 if validate_name(name_event):
                     if validate_date(start_date, end_date):
@@ -167,14 +198,15 @@ def games():
 
                         cursor.execute(
                             "INSERT INTO events (name_events, info, start_date, end_date, user_id) VALUES (?, ?, ?, ?, ?)",
-                            (name_event, info, start_date, end_date, user_id)
-                        )
+                            (name_event, info, start_date, end_date, user_id))
+                        #events_number+=1
                         conn.commit()
                         conn.close()
                     else:
                         error = 'Wrong data'
                 else:
                     error = 'Event already created'
+
             else:
                 error = 'Check all lines'
 
@@ -191,11 +223,26 @@ def event_page(event_name):
     cursor = conn.cursor()
     cursor.execute("SELECT name_events, info, start_date, end_date, user_id FROM events WHERE name_events = ?",
                    (event_name,))
-    events = cursor.fetchall() # id_user [0][4]
+    events = cursor.fetchall() # id_user [0][]
 
-    username = cursor.execute("SELECT username FROM users WHERE id = ?", (events[0][4], ))
-    username = username.fetchone()
-    return render_template('eventpage.html',name_author=username[0], name_event=event_name, info_event=events[0][1], start_date=events[0][2], end_date=events[0][3])
+    username_author = cursor.execute("SELECT username FROM users WHERE id = ?", (events[0][4], ))
+    username_author = username_author.fetchone()
+
+    #cursor.execute("INSERT INTO users (email, username, password) VALUES (?, ?, ?)", (email, username, password))
+
+    if request.method == 'POST':
+
+        cursor.execute("Select id FROM users WHERE email=?", (session["email"],))
+        id=cursor.fetchone()
+        cursor.execute("SELECT name_events FROM joined_events WHERE user_id=? AND name_events=?", (id[0],events[0][0]))
+        info = cursor.fetchall()
+        if not info:
+            print("joined")
+            cursor.execute("INSERT INTO joined_events (name_events, user_id) VALUES (?,?)", (events[0][0],id[0]))
+            conn.commit()
+            conn.close()
+
+    return render_template('eventpage.html',name_author=username_author[0], name_event=event_name, info_event=events[0][1], start_date=events[0][2], end_date=events[0][3])
 
 
 '''

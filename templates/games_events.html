@@ -23,6 +23,10 @@
             <div class="card mb-3">
                 <div class="card-header">
                     <h5 class="mb-0">Create new event</h5>
+                    <div class="text-end">
+                        <button type="submit" name="start" value="close" class="btn btn-danger my_button">X</button>
+                    </div>
+
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -37,13 +41,27 @@
 
                     <div class="mb-3">
                         <label for="info" class="form-label">Description</label>
-                        <textarea
-                            class="form-control"
-                            id="info"
-                            name="info"
-                            rows="3"
-                            placeholder="Type info about game event"></textarea>
+                            <div>
+                              <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+
+                            <!-- Create the editor container -->
+                            <div id="editor">
+                              <p><br /></p>
+                            </div>
+
+                            <!-- Include the Quill library -->
+                            <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
+                            <!-- Initialize Quill editor -->
+                            <script>
+                              const quill = new Quill('#editor', {
+                                theme: 'snow'
+                              });
+                            </script>
+                            </div>
+
                     </div>
+
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
