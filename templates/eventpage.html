@@ -1,13 +1,32 @@
 {% extends 'base.html' %}
 
-{% block title %} {{ name_event }} {% endblock %}
+{% block title %}{{ name_event }}{% endblock %}
 
 {% block content %}
-  <h2>{{ name_event }}</h2>
-  <p>{{ info_event }}</p>
-  <p>{{ start_date }} - {{ end_date }}</p>
-  <p>{{ name_author }}</p>
-  <form method="POST">
-      <button type="submit" class="btn btn-success">Join</button>
-  </form>
+<div class="container my-5 d-flex justify-content-center">
+  <div class="card shadow p-4" style="max-width: 700px; width: 100%;">
+    <div class="card-body">
+      <h2 class="card-title text-center mb-4">{{ name_event }}</h2>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Description:</label>
+        <div class="card-text">{{ info_event | safe }}</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Dates:</label>
+        <p class="mb-0">{{ start_date }} – {{ end_date }}</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label fw-bold">Created by:</label>
+        <p class="mb-0">{{ name_author }}</p>
+      </div>
+
+      <form method="POST" class="text-center">
+        <button type="submit" class="btn btn-success px-5">Join</button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
