@@ -11,21 +11,23 @@ def get_db_connection():
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '1234'
 
-
-@app.route('/')  # головна сторінка logika.com
+'''
+@app.route('/')
 def main_page():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT role FROM users WHERE email=?", (session["email"],))
-    role=cursor.fetchone()
-    if role[0] == "admin":
-        show_button=True
-    else:
-        show_button=False
+    show_button=None
+    if session:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT role FROM users WHERE email=?", (session["email"],))
+        role=cursor.fetchone()
+        if role[0] == "admin":
+            show_button=True
+        else:
+            show_button=False
     return render_template('main.html', show_button=show_button)
-
-
-@app.route('/register', methods=['POST', 'GET'])  # сторінка logika.com/register
+'''
+'''
+@app.route('/register', methods=['POST', 'GET'])
 def register():
     error = None
     email = request.form.get('email')
@@ -58,8 +60,8 @@ def register():
                 return redirect(url_for('home'))
 
     return render_template('register.html', error=error)
-
-
+'''
+'''
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     error = None
@@ -69,7 +71,7 @@ def login():
         if email and password:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM users WHERE email=?", (email,))  # отримати всі елементи з email
+            cursor.execute("SELECT * FROM users WHERE email=?", (email,))
             user = cursor.fetchone()
             conn.close()
 
@@ -85,8 +87,8 @@ def login():
                 error = 'Email error'
 
     return render_template('login.html', error=error)
-
-
+'''
+'''
 @app.route('/home', methods=['POST', 'GET'])
 def home():
     conn = get_db_connection()
@@ -103,12 +105,14 @@ def home():
     # отримати дату приєднаних ві
     conn.close()
     return render_template('home.html', username=session['username'], email=session['email'], events=events, joined_events=joined_events, role=role[0])
+'''
 
-
+'''
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('login'))'''
+
 
 
 def validate_date(start_date, end_date):
