@@ -1,15 +1,13 @@
-import sqlite3
+from utils.util import get_db_connection
 
-
-def get_db_connection():
-    conn = sqlite3.connect("users.db")
-    return conn
 
 def get_user_id(email):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('SELECT id FROM users WHERE email=?', (email,))
     user = cursor.fetchone()
+    return user
+
 
 def get_user_role(email):
     conn = get_db_connection()
@@ -17,6 +15,7 @@ def get_user_role(email):
     cursor.execute("SELECT role FROM users WHERE email=?", (email,))
     role=cursor.fetchone()
     return role
+
 
 def check_email_name (email,username):
     error = None
@@ -34,6 +33,7 @@ def check_email_name (email,username):
         conn.close()
     return error
 
+
 def check_email_password(email,password):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -42,6 +42,7 @@ def check_email_password(email,password):
     conn.close()
     return user
 
+
 def save_data(email,username,password):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -49,6 +50,7 @@ def save_data(email,username,password):
                    (email, username, password, "user"))
     conn.commit()
     conn.close()
+
 
 def get_all_info(email):
     conn = get_db_connection()
@@ -64,6 +66,7 @@ def get_all_info(email):
     conn.close()
     return user_id, role, events, joined_events
 
+
 def start_game(email):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -73,4 +76,10 @@ def start_game(email):
     events = cursor.fetchall()
     events_count = len(events)
     return user_info, events_count
-def create_game
+
+def update_info(user_id, name, info, pfp):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    #cursor.execute('DELETE FROM users WHERE user_id-?', (user_id, )) видалення з бд
+    #cursor.execute('REPLACE INTO user (username, info, pfp) VALUES (?, ?, ?)', ()) пперезапис
+

@@ -1,9 +1,9 @@
 from flask import render_template, session, Blueprint, request, redirect, url_for
 from models.users import check_email_name, check_email_password, save_data
 
-auth_bp = Blueprint('auth', __name__)
+bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/register', methods=['POST', 'GET'])
+@bp.route('/register', methods=['POST', 'GET'])
 def register():
     error = None
     email = request.form.get('email')
@@ -21,7 +21,7 @@ def register():
     session['email'] = email
     return render_template('register.html', error=error)
 
-@auth_bp.route('/login', methods=['POST', 'GET'])
+@bp.route('/login', methods=['POST', 'GET'])
 def login():
     error = None
     if request.method == 'POST':
@@ -41,7 +41,7 @@ def login():
 
     return render_template('login.html', error=error)
 
-@auth_bp.route('/logout', methods=['POST', 'GET'])
+@bp.route('/logout', methods=['POST', 'GET'])
 def logout():
     session.clear()
     return redirect(url_for('login'))

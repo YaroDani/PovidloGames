@@ -114,7 +114,7 @@ def logout():
     return redirect(url_for('login'))'''
 
 
-
+'''
 def validate_date(start_date, end_date):
     error = None
     data_s = list(map(int, start_date.split("-")))
@@ -148,8 +148,8 @@ def validate_name(name_event):
     if result:
         return False
     return True
-
-
+'''
+'''
 @app.route('/games-events', methods=['POST', 'GET'])
 def games():
     start = None
@@ -247,11 +247,12 @@ def event_page(event_name):
             conn.close()
 
     return render_template('eventpage.html',name_author=username_author[0], name_event=event_name, info_event=events[0][1], start_date=events[0][2], end_date=events[0][3])
-
+'''
 
 '''
 @app.route('/about-me/<name>/<age>')
 def about(name, age):
     return name + " " + age + " y. o."'''
-
+'''
 app.run(debug=True)
+'''

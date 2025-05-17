@@ -1,10 +1,10 @@
 from flask import render_template, session, Blueprint
 from models.users import get_user_role
 
-main_bp = Blueprint('main', __name__)
+bp = Blueprint('main', __name__)
 
 
-@main_bp.route('/')  # головна сторінка logika.com
+@bp.route('/')  # головна сторінка logika.com
 def main_page():
     show_button=None
     if session:

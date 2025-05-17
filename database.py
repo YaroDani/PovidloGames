@@ -9,7 +9,9 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT NOT NULL UNIQUE,
     username TEXT NOT NULL,
     password TEXT NOT NULL,
-    role TEXT NOT NULL
+    role TEXT NOT NULL,
+    info TEXT,
+    pfp BLOB
 )
 ''')
 
@@ -31,6 +33,13 @@ CREATE TABLE IF NOT EXISTS joined_events (
     name_events TEXT NOT NULL,
     user_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES users(id)
+)
+''')
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS comments(
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    text TEXT NOT NULL,
+    author_id INTEGER
 )
 ''')
 
