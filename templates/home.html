@@ -9,19 +9,19 @@
       <div class="card">
         <div class="card-body text-center">
           <div class="mb-3">
-            <img src="https://via.placeholder.com/150" class="rounded-circle img-fluid" alt="Profile picture">
+            <img src="{{ url_for('home.pfp_by_email', email=session['email']) }}?t={{ current_time }}" class="rounded-circle img-fluid" alt="Profile picture">
           </div>
           <h4>{{ username }}</h4>
           <p class="text-muted">{{ email }}</p>
           <p class="text-muted">{{ role }}</p>
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 {% if not start %}
                     <button type="submit" name="start" value="start" class="btn btn-outline-primary btn-sm mb-2">Edit profile</button>
                 {% endif %}
                 {% if start %}
 
-                  <input type="username" placeholder="Change nickname" >
-                  <button class="btn btn-outline-secondary btn-sm">Upload photo</button>
+                  <input type="text" name="username" placeholder="Change nickname">
+                  <input type="file" name="file">
                   <button type="submit" name="save" class="btn btn-outline-secondary btn-sm" >Save</button>
                 {% endif %}
             </form>
@@ -31,7 +31,7 @@
 
     <div class="col-md-8">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>My Events</h4>
+        <h4>Created Events</h4>
         <button class="btn btn-success">Add Project</button>
       </div>
 

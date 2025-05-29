@@ -37,7 +37,15 @@ def games():
                             return redirect(url_for('login'))
                         else:
                             user_id = user[0]
-                            create_game(name_event, info, start_date, end_date, user_id)
+                            try:
+                                create_game(name_event, info, start_date, end_date, user_id)
+                            except Exception as e:
+                                print(e)
+                                print(user_id)
+                                print(name_event)
+                                print(info)
+                                print(start_date)
+                                print(end_date)
                     else:
                         error = 'Wrong data'
                 else:

@@ -80,6 +80,6 @@ def start_game(email):
 def update_info(user_id, name, info, pfp):
     conn = get_db_connection()
     cursor = conn.cursor()
-    #cursor.execute('DELETE FROM users WHERE user_id-?', (user_id, )) видалення з бд
-    #cursor.execute('REPLACE INTO user (username, info, pfp) VALUES (?, ?, ?)', ()) пперезапис
+    #cursor.execute('DELETE FROM users WHERE user_id-?', (user_id, ))
+    #cursor.execute('REPLACE INTO user (username, info, pfp) VALUES (?, ?, ?)', ()) перезапис
 

@@ -15,7 +15,7 @@ def register():
             error = check_email_name(email,username)
             if not error:
                 save_data(email,username,password)
-                return redirect(url_for('home'))
+                return redirect(url_for('home.home'))
 
     session['username'] = username
     session['email'] = email
@@ -44,4 +44,4 @@ def login():
 @bp.route('/logout', methods=['POST', 'GET'])
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('auth.login'))
