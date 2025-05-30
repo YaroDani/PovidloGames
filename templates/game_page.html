@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block title %}{{ game[1] }}{% endblock %}
+
+{% block content %}
+<style>
+  .game-hero {
+    background: linear-gradient(90deg, #312a53 0%, #4e4376 100%);
+    color: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 30px rgba(60,30,110,0.2);
+    padding: 2.5rem 2rem 2rem 2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-hero h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: .7rem;
+  }
+  .game-hero .author-card {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    background: rgba(0,0,0,0.25);
+    padding: .7rem 1.2rem;
+    border-radius: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    box-shadow: 0 2px 12px rgba(40,40,80,0.13);
+  }
+  .game-hero .author-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ffd70088;
+    background: #eee;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.2rem;
+    margin: 2.2rem 0 1rem 0;
+  }
+  .gallery img {
+    width: 100%;
+    border-radius: 1.3rem;
+    box-shadow: 0 6px 16px rgba(34,19,56,0.12);
+    transition: transform .18s;
+    cursor: pointer;
+    background: #1a162d;
+  }
+  .gallery img:hover {
+    transform: scale(1.04) rotate(-1deg);
+    box-shadow: 0 16px 40px rgba(34,19,56,0.28);
+  }
+  .action-section {
+    margin: 2.5rem 0 0 0;
+    background: linear-gradient(80deg, #6d5eac 20%, #4e4376 100%);
+    border-radius: 1.2rem;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 8px 24px rgba(60,30,110,0.11);
+  }
+  .action-section h4 {
+    color: #ffd700;
+    font-size: 1.25rem;
+    margin-bottom: 1.1rem;
+  }
+  .action-section .btn {
+    margin-right: 1.2rem;
+    min-width: 150px;
+  }
+
+  .rating-block {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+  }
+  .stars {
+    display: inline-flex;
+    gap: .18rem;
+  }
+  .star {
+    font-size: 2.1rem;
+    color: #ffd700aa;
+    transition: color .16s;
+    cursor: pointer;
+    filter: drop-shadow(0 2px 5px #fff2);
+    user-select: none;
+  }
+  .star:hover,
+  .star.hovered {
+    color: #ffd700;
+    filter: drop-shadow(0 2px 8px #ffd70055);
+  }
+  .rating-text {
+    font-size: 1.12rem;
+    color: #ffd700;
+    letter-spacing: .05em;
+    margin-left: .8rem;
+    font-weight: 600;
+  }
+  @media (max-width: 600px) {
+    .game-hero { padding: 1rem; }
+    .game-hero .author-card { top: unset; bottom: 1rem; right: 1rem; }
+    .gallery { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="container mt-5">
+  <div class="game-hero">
+    <h2>{{ game[1] }}</h2>
+    <p style="font-size:1.15rem; max-width: 600px;">{{ game[2] }}</p>
+    <a href="{{ url_for('games.download_file', game_id=game[0]) }}"
+       class="btn btn-lg btn-warning mt-3 px-4"
+       style="font-weight:600; letter-spacing:1px;">⬇️ Download Game</a>
+
+    <div class="rating-block">
+      <span class="rating-text">Rate this game:</span>
+      <span class="stars">
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+      </span>
+    </div>
+
+    <div class="author-card">
+      <img src="{{ url_for('home.pfp_by_email', email=game[5]) }}" alt="avatar"
+           class="author-avatar">
+      <div>
+        <div style="font-weight:600">{{ game[6] or "Author" }}</div>
+        <div style="font-size:.9rem; color:#ffc">{{ game[5] }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gallery">
+    {% for img in images %}
+      <img src="{{ url_for('games.game_image', image_id=img[0]) }}"
+           alt="Screenshot {{ loop.index }}"
+           loading="lazy">
+    {% endfor %}
+  </div>
+
+  {% if is_creator %}
+  <div class="action-section mt-4">
+    <h4>Creator Panel</h4>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="#" class="btn btn-outline-light disabled">✏️ Edit Game</a>
+      <a href="#" class="btn btn-outline-light disabled">🗑️ Delete Game</a>
+      <a href="#" class="btn btn-outline-light disabled">📤 Add Screenshot</a>
+      <a href="#" class="btn btn-outline-light disabled">⚙️ Settings</a>
+    </div>
+    <div class="mt-2 text-warning" style="font-size:.98rem;">
+      (This panel is visible only to the game creator)
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

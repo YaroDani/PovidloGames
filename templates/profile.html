@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block title %}Profile of {{ username }}{% endblock %}
+
+{% block content %}
+<style>
+  .profile-view-card {
+    background: linear-gradient(100deg, #2d2344 60%, #463a71 100%);
+    color: #fff;
+    border-radius: 1.35rem;
+    box-shadow: 0 8px 32px #312a5390;
+    padding: 2.2rem 1.5rem 2rem 1.5rem;
+    border: none;
+    text-align: center;
+    margin-bottom: 2.3rem;
+  }
+  .profile-avatar img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ffd700bb;
+    box-shadow: 0 3px 18px #ffd70033;
+    background: #fff1;
+    margin: 0 auto;
+  }
+  .profile-view-card h4 {
+    color: #ffd700;
+    font-weight: 700;
+    margin-bottom: .5rem;
+    margin-top: 1rem;
+  }
+  .profile-view-card .text-muted {
+    color: #bcb8d6!important;
+    font-size: 1rem;
+    margin-bottom: .1rem;
+  }
+  .list-group-item {
+    background: #28203f !important;
+    color: #ffd700;
+    border-radius: .7rem !important;
+    margin-bottom: .3rem;
+    border: none;
+    font-size: 1.09rem;
+    box-shadow: 0 1px 8px #241c3711;
+  }
+  .list-group-item a {
+    color: #ffd700;
+    font-weight: 600;
+    text-decoration: none;
+    transition: text-shadow .13s;
+  }
+  .list-group-item a:hover {
+    text-shadow: 0 1px 7px #ffd70088;
+    color: #fffbe1;
+  }
+  .list-group-item .badge {
+    background: linear-gradient(92deg, #ffd700 70%, #ffe564 100%);
+    color: #312a53;
+    font-size: .98rem;
+    font-weight: 700;
+    border-radius: .85rem;
+    padding: .42rem 1.2rem;
+    box-shadow: 0 2px 7px #ffd70023;
+  }
+  .section-title {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 1.18rem;
+    letter-spacing: .04em;
+    margin-bottom: .8rem;
+    margin-top: 1.7rem;
+  }
+  .alert-info, .alert-secondary {
+    border-radius: .8rem;
+    background: #4e4376cc;
+    color: #ffd700;
+    border: 1.5px solid #ffd70055;
+    margin-bottom: 1.1rem;
+  }
+  .comments-card {
+    background: linear-gradient(100deg, #28203f 60%, #3e3360 100%);
+    color: #ffd700;
+    border-radius: 1.1rem;
+    box-shadow: 0 4px 20px #241c3766;
+    border: none;
+    margin-bottom: 1.6rem;
+    text-align: left;
+  }
+</style>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="profile-view-card">
+        <div class="profile-avatar mb-3">
+          <img src="{{ url_for('home.pfp_by_email', email=email) }}" alt="Profile picture of {{ username }}">
+        </div>
+        <h4>{{ username }}</h4>
+        <div class="text-muted">{{ email }}</div>
+        <div class="text-muted">{{ role }}</div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="section-title mb-2">Created Events</div>
+      {% if events %}
+      <ul class="list-group mb-3">
+        {% for name, date in events %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <a href="/event-{{ name }}">{{ name }}</a>
+          <span class="badge">{{ date }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div class="alert alert-info">
+        This user hasn't created any events yet.
+      </div>
+      {% endif %}
+
+      <div class="section-title mb-2">Joined Events</div>
+      {% if joined_events %}
+      <ul class="list-group mb-3">
+        {% for name in joined_events %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <a href="/event-{{ name }}">{{ name }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div class="alert alert-info">
+        This user hasn't joined any events yet.
+      </div>
+      {% endif %}
+
+      <div class="section-title mb-2">Comments</div>
+      {% if comments %}
+        <div class="comments-card card mb-2">
+          <div class="card-body">
+            {% autoescape off %}
+            {{ comments }}
+            {% endautoescape %}
+          </div>
+        </div>
+      {% else %}
+        <div class="alert alert-secondary">No comments found.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

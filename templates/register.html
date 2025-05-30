@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<style>
+    .register-card {
+        background: linear-gradient(100deg, #2d2344 60%, #463a71 100%);
+        color: #e4e1f0;
+        border-radius: 1.4rem;
+        box-shadow: 0 8px 36px #312a5390;
+        padding: 2.3rem 2.3rem 2rem 2.3rem;
+        border: none;
+    }
+    .register-card .card-header {
+        background: none;
+        border-bottom: none;
+        margin-bottom: 1rem;
+    }
+    .register-card .card-title {
+        color: #ffd700;
+        font-weight: bold;
+        letter-spacing: .03em;
+        font-size: 2rem;
+        text-shadow: 0 2px 8px #ffd70018;
+    }
+    .form-label {
+        color: #ffd700;
+        font-weight: 600;
+        font-size: 1.07rem;
+    }
+    .form-control {
+        background: #2a2545;
+        color: #ffd700;
+        border: 1.5px solid #ffd70044;
+        border-radius: .85rem;
+        font-size: 1.09rem;
+        margin-bottom: .1rem;
+    }
+    .form-control:focus {
+        background: #312a53;
+        border-color: #ffd700;
+        box-shadow: 0 0 0 0.2rem #ffd70033;
+        color: #fff;
+    }
+    .input-group .btn {
+        border-radius: .85rem;
+        border-color: #ffd70044;
+        background: #372e57;
+        color: #ffd700;
+        font-weight: 600;
+        transition: background .15s, color .15s;
+    }
+    .input-group .btn:hover {
+        background: #ffd700;
+        color: #312a53;
+    }
+    .btn-success {
+        background: linear-gradient(95deg, #ffd700 50%, #ffe564 100%);
+        color: #2d2344;
+        font-weight: 600;
+        border: none;
+        border-radius: .95rem;
+        font-size: 1.15rem;
+        letter-spacing: .02em;
+        box-shadow: 0 4px 18px #ffd70022;
+        transition: background .17s, color .13s;
+    }
+    .btn-success:hover {
+        background: linear-gradient(85deg, #ffd700 80%, #fffbe1 100%);
+        color: #4e4376;
+        box-shadow: 0 6px 24px #ffd70055;
+    }
+    .alert-danger {
+        border-radius: .7rem;
+        background: #4e4376cc;
+        color: #ffd700;
+        border: 1.5px solid #ffd70055;
+    }
+</style>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6 col-xl-5">
+            <div class="card register-card shadow">
+                <div class="card-header text-center">
+                    <h4 class="card-title mb-2">Create an Account</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" autocomplete="off">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+                                <button class="btn" type="button" onclick="togglePassword()">Show</button>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-success py-2">Register</button>
+                        </div>
+                        {% if error %}
+                        <div class="alert alert-danger mt-3 text-center">
+                            {{ error }}
+                        </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = passwordInput.nextElementSibling;
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleBtn.textContent = 'Hide';
+        } else {
+            passwordInput.type = 'password';
+            toggleBtn.textContent = 'Show';
+        }
+    }
+</script>
+{% endblock %}
