@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Add Game{% endblock %}
+{% block content %}
+<style>
+  .add-game-card {
+    background: linear-gradient(100deg, #2d2344 60%, #463a71 100%);
+    color: #fff;
+    border-radius: 1.4rem;
+    box-shadow: 0 8px 32px #312a5390;
+    padding: 2.3rem 2.2rem 2rem 2.2rem;
+    border: none;
+    max-width: 600px;
+    margin: 0 auto 2.5rem auto;
+  }
+  .add-game-card label {
+    color: #ffd700;
+    font-weight: 600;
+    font-size: 1.08rem;
+  }
+  .add-game-card .form-control {
+    background: #2a2545;
+    color: #ffd700;
+    border: 1.5px solid #ffd70044;
+    border-radius: .85rem;
+    font-size: 1.09rem;
+  }
+  .add-game-card .form-control:focus {
+    background: #312a53;
+    border-color: #ffd700;
+    box-shadow: 0 0 0 0.2rem #ffd70033;
+    color: #fff;
+  }
+  .add-game-card .form-text {
+    color: #ffd700cc;
+  }
+  .add-game-card .btn-primary {
+    background: linear-gradient(92deg, #ffd700 70%, #ffe564 100%);
+    color: #2d2344;
+    font-weight: 700;
+    border: none;
+    border-radius: .95rem;
+    font-size: 1.13rem;
+    box-shadow: 0 4px 18px #ffd70022;
+    transition: background .15s, color .12s;
+    padding: .7rem 2.5rem;
+    margin-top: .6rem;
+    letter-spacing: .03em;
+  }
+  .add-game-card .btn-primary:hover {
+    background: linear-gradient(85deg, #ffd700 85%, #fffbe1 100%);
+    color: #4e4376;
+    box-shadow: 0 6px 24px #ffd70055;
+  }
+  .alert-success {
+    border-radius: .8rem;
+    background: #00c16a25;
+    color: #00c16a;
+    border: 1.5px solid #00c16a55;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+</style>
+<div class="container mt-5">
+  <div class="add-game-card">
+    <h2 class="mb-4" style="color:#ffd700;font-weight:800;letter-spacing:.03em;">Add a New Game</h2>
+    <form method="POST" enctype="multipart/form-data">
+      {% if event_id %}
+        <input type="hidden" name="event_id" value="{{ event_id }}">
+        <div class="alert alert-success py-2 mb-3">
+          This game will be added to event: <b>{{ event_name or event_id }}</b>
+        </div>
+      {% endif %}
+      <div class="mb-3">
+        <label for="title" class="form-label">Game Title *</label>
+        <input type="text" class="form-control" id="title" name="title" placeholder="Enter game title..." required>
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Game Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Describe your game..."></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="file" class="form-label">Archive or .exe file *</label>
+        <input type="file" class="form-control" id="file" name="file" required>
+        <div class="form-text">Upload a .zip, .rar, or .exe file (max 100 MB).</div>
+      </div>
+      <div class="mb-3">
+        <label for="images" class="form-label">Game Gallery (multiple allowed)</label>
+        <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
+        <div class="form-text">Add 1 or more screenshots of your game (JPG, PNG, etc).</div>
+      </div>
+      <button type="submit" class="btn btn-primary">Add Game</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -9,16 +9,23 @@ bp = Blueprint('profiles', __name__)
 def profile_page(username):
     print(username)
     comments = None
-    conn=get_db_connection()
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT email FROM users WHERE username=?", (username,))
-    email = cursor.fetchone()
-    user_id, role, events, joined_events = get_all_info(email[0])
+    email_row = cursor.fetchone()
+    if not email_row:
+        return "Користувача не знайдено", 404
+    email = email_row[0]
+    user_id, role, events, joined_events = get_all_info(email)
     joined_events = [row[0] for row in joined_events]
     cursor.execute("SELECT text FROM comments WHERE user_id=?", (user_id[0],))
     comments = cursor.fetchone()
-    return render_template('profile.html', username=username,
-                           events=events,
-                           joined_events=joined_events,
-                           role=role[0],
-                           comments=comments)
+    return render_template(
+        'profile.html',
+        username=username,
+        email=email,  # Додаємо email для аватарки
+        events=events,
+        joined_events=joined_events,
+        role=role[0] if isinstance(role, (list, tuple)) else role,
+        comments=comments
+    )

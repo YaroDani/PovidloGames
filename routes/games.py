@@ -1,4 +1,6 @@
-from flask import render_template, session, Blueprint, request, redirect, url_for
+import io
+from mimetypes import guess_type
+from flask import render_template, session, Blueprint, request, redirect, url_for, send_file
 from models.events import get_info_a_event, create_game, get_all_events, get_user_name
 from models.users import start_game, get_user_id
 from utils.util import validate_name, validate_date, get_db_connection
@@ -33,8 +35,10 @@ def games():
                 if validate_name(name_event):
                     if validate_date(start_date, end_date):
                         user=get_user_id(session['email'])
+                        print(session['email'])
+                        print(user)
                         if not user:
-                            return redirect(url_for('login'))
+                            return redirect(url_for('auth.login'))
                         else:
                             user_id = user[0]
                             try:
@@ -77,5 +81,72 @@ def event_page(event_name):
             cursor.execute("INSERT INTO joined_events (name_events, user_id) VALUES (?,?)", (events[0][0],id[0]))
             conn.commit()
             conn.close()
+    event = events[0]
+    return render_template('eventpage.html',name_author=username_author[0], name_event=event_name, event=event,info_event=events[0][1], start_date=events[0][2], end_date=events[0][3])
 
-    return render_template('eventpage.html',name_author=username_author[0], name_event=event_name, info_event=events[0][1], start_date=events[0][2], end_date=events[0][3])
+@bp.route('/game/<int:game_id>')
+def game_page(game_id):
+    conn = get_db_connection()
+    game = conn.execute("""
+        SELECT 
+            games.id, 
+            games.title, 
+            games.description, 
+            games.file_name,
+            games.user_id,        -- id автора
+            users.email,          -- email автора
+            users.username        -- ім'я автора
+        FROM games
+        JOIN users ON games.user_id = users.id
+        WHERE games.id = ?
+    """, (game_id,)).fetchone()
+    images = conn.execute("SELECT id FROM game_images WHERE game_id = ?", (game_id,)).fetchall()
+    conn.close()
+
+    is_creator = False
+    if "email" in session and game and session['email'] == game[5]:
+        is_creator = True
+
+    return render_template(
+        'game_page.html',
+        game=game,
+        images=images,
+        is_creator=is_creator
+    )
+
+@bp.route('/game/<int:game_id>/download')
+def download_file(game_id):
+    conn = get_db_connection()
+    row = conn.execute("SELECT file_data, file_name FROM games WHERE id = ?", (game_id,)).fetchone()
+    conn.close()
+    if row and row[0]:
+        return send_file(io.BytesIO(row[0]), download_name=row[1], as_attachment=True)
+    return "Файл не знайдено", 404
+
+@bp.route('/game/image/<int:image_id>')
+def game_image(image_id):
+    conn = get_db_connection()
+    row = conn.execute("SELECT image_data, image_name FROM game_images WHERE id = ?", (image_id,)).fetchone()
+    conn.close()
+    if row and row[0]:
+        mime_type = guess_type(row[1])[0] or 'image/png'
+        return send_file(io.BytesIO(row[0]), mimetype=mime_type)
+    return redirect("https://via.placeholder.com/300x200")
+
+@bp.route('/games')
+def games_gallery():
+    conn = get_db_connection()
+    games = conn.execute("""
+        SELECT g.id, g.title
+        FROM games g
+        ORDER BY g.created_at DESC
+    """).fetchall()
+    game_images = {}
+    for game in games:
+        img = conn.execute(
+            "SELECT id FROM game_images WHERE game_id = ? LIMIT 1", (game[0],)
+        ).fetchone()
+        game_images[game[0]] = img[0] if img else None
+    conn.close()
+    return render_template('games.html', games=games, game_images=game_images)
+

@@ -42,6 +42,27 @@ CREATE TABLE IF NOT EXISTS comments(
     author_id INTEGER
 )
 ''')
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS games (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT,
+    file_data BLOB,
+    file_name TEXT,
+    user_id INTEGER,
+    created_at TEXT,
+    event_id TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+)''')
 
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS game_images (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    game_id INTEGER,
+    image_data BLOB,
+    image_name TEXT,
+    FOREIGN KEY (game_id) REFERENCES games(id)
+)
+''')
 conn.commit()
 conn.close()

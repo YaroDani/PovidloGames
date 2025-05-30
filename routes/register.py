@@ -15,10 +15,10 @@ def register():
             error = check_email_name(email,username)
             if not error:
                 save_data(email,username,password)
+                session['username'] = username
+                session['email'] = email
                 return redirect(url_for('home.home'))
 
-    session['username'] = username
-    session['email'] = email
     return render_template('register.html', error=error)
 
 @bp.route('/login', methods=['POST', 'GET'])

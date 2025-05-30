@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Games | Gallery{% endblock %}
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(120deg, #241c37 0%, #312a53 100%);
+  }
+  .games-title {
+    color: #ffd700;
+    font-size: 2.1rem;
+    font-weight: bold;
+    letter-spacing: .04em;
+    margin-bottom: 2rem;
+    text-align: left;
+    text-shadow: 0 2px 18px #ffd70022, 0 2px 6px #281e3e48;
+  }
+  .game-card {
+    background: linear-gradient(110deg, #292146 70%, #483b7b 100%);
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 20px #312a5385;
+    color: #ffd700;
+    transition: transform .15s, box-shadow .18s;
+    border: none;
+    overflow: hidden;
+    position: relative;
+  }
+  .game-card:hover {
+    transform: scale(1.035) translateY(-5px);
+    box-shadow: 0 12px 38px #ffd70033, 0 4px 20px #241c3744;
+    z-index: 2;
+  }
+  .game-card .card-img-top,
+  .game-card .bg-light {
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+  }
+  .game-card .card-title {
+    color: #ffd700;
+    font-weight: 700;
+    margin-bottom: .5rem;
+    letter-spacing: .02em;
+    font-size: 1.13rem;
+    min-height: 2.2em;
+  }
+  .game-card .card-text {
+    color: #bcb8d6;
+    font-size: 0.97rem;
+    min-height: 38px;
+    margin-bottom: 0;
+  }
+  .game-card .stretched-link {
+    color: #ffd700;
+    text-decoration: none;
+  }
+  .game-card .stretched-link:hover {
+    text-shadow: 0 1px 7px #ffd70088;
+    color: #fffbe1;
+  }
+  .game-card .bg-light {
+    background: #2a2545 !important;
+    color: #ffd700bb !important;
+    font-weight: 600;
+    font-size: 1.13rem;
+  }
+</style>
+<div class="container py-5">
+  <h2 class="games-title">All Games</h2>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for game in games %}
+      <div class="col">
+        <div class="card game-card h-100 shadow-sm border-0">
+          <a href="{{ url_for('games.game_page', game_id=game[0]) }}" class="text-decoration-none">
+            {% if game_images[game[0]] %}
+              <img src="{{ url_for('games.game_image', image_id=game_images[game[0]]) }}"
+                   class="card-img-top"
+                   style="height: 180px; object-fit: cover; background: #201a32;">
+            {% else %}
+              <div class="bg-light d-flex align-items-center justify-content-center"
+                   style="height: 180px;">
+                No image
+              </div>
+            {% endif %}
+          </a>
+          <div class="card-body p-3">
+            <h5 class="card-title mb-1">
+              <a href="{{ url_for('games.game_page', game_id=game[0]) }}" class="stretched-link">
+                {{ game[1] }}
+              </a>
+            </h5>
+            {% if game|length > 2 and game[2] %}
+            <div class="card-text">{{ game[2]|truncate(65, True) }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

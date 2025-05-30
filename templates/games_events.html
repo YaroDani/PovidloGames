@@ -1,41 +1,156 @@
 {% extends 'base.html' %}
-{% block title %}Games{% endblock %}
+{% block title %}Events{% endblock %}
 
 {% block content %}
-<div class="container my-4">
+<style>
+  .event-main-card {
+    background: linear-gradient(100deg, #2d2344 60%, #463a71 100%);
+    border-radius: 1.3rem;
+    box-shadow: 0 8px 28px #312a5377;
+    color: #e4e1f0;
+    padding: 2.2rem 2.3rem 1.7rem 2.3rem;
+    border: none;
+    margin-bottom: 2.2rem;
+  }
+  .event-main-card .card-header {
+    background: none;
+    border-bottom: none;
+    padding-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .event-main-card .card-header h5 {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 1.37rem;
+    letter-spacing: .02em;
+    margin: 0;
+  }
+  .event-main-card .btn-danger.my_button {
+    border-radius: .85rem;
+    padding: .36rem 1.1rem;
+    font-size: 1.18rem;
+    background: #ff4060;
+    border: none;
+    box-shadow: 0 2px 7px #ff406033;
+    color: #fff;
+    transition: background .15s;
+  }
+  .event-main-card .btn-danger.my_button:hover {
+    background: #fd0037;
+    color: #ffd700;
+  }
+  .event-main-card label.form-label {
+    color: #ffd700;
+    font-weight: 600;
+    font-size: 1.09rem;
+    margin-bottom: .1rem;
+  }
+  .event-main-card .form-control {
+    background: #2a2545;
+    color: #ffd700;
+    border: 1.5px solid #ffd70044;
+    border-radius: .85rem;
+    font-size: 1.09rem;
+  }
+  .event-main-card .form-control:focus {
+    background: #312a53;
+    border-color: #ffd700;
+    box-shadow: 0 0 0 0.2rem #ffd70033;
+    color: #fff;
+  }
+  .event-main-card .btn-success {
+    background: linear-gradient(95deg, #ffd700 50%, #ffe564 100%);
+    color: #2d2344;
+    font-weight: 600;
+    border: none;
+    border-radius: .95rem;
+    font-size: 1.12rem;
+    box-shadow: 0 4px 18px #ffd70022;
+    transition: background .17s, color .13s;
+  }
+  .event-main-card .btn-success:hover {
+    background: linear-gradient(85deg, #ffd700 80%, #fffbe1 100%);
+    color: #4e4376;
+    box-shadow: 0 6px 24px #ffd70055;
+  }
+  .alert-info {
+    background: #2d2344ee;
+    color: #ffd700;
+    border-radius: .8rem;
+    border: 1.5px solid #ffd70055;
+    box-shadow: 0 2px 10px #ffd70022;
+  }
+  .alert-danger {
+    border-radius: .8rem;
+    background: #4e4376cc;
+    color: #ffd700;
+    border: 1.5px solid #ffd70055;
+  }
+  .list-group-item {
+    background: #28203f !important;
+    color: #ffd700;
+    border-radius: .6rem !important;
+    margin-bottom: .3rem;
+    border: none;
+    transition: background .12s, color .12s;
+    font-size: 1.11rem;
+    box-shadow: 0 1px 8px #241c3711;
+  }
+  .list-group-item a {
+    color: #ffd700;
+    font-weight: 600;
+    text-decoration: none;
+    transition: text-shadow .13s;
+  }
+  .list-group-item a:hover {
+    text-shadow: 0 1px 7px #ffd70088;
+    color: #fffbe1;
+  }
+  .list-group-item .badge {
+    background: linear-gradient(92deg, #ffd700 70%, #ffe564 100%);
+    color: #312a53;
+    font-size: .98rem;
+    font-weight: 700;
+    border-radius: .85rem;
+    padding: .42rem 1.2rem;
+    box-shadow: 0 2px 7px #ffd70023;
+  }
+</style>
+
+<div class="container my-5">
     {% if session.get('username') %}
-        <form method="POST">
-            {% if not start %}
-                <div class="mb-3">
-                    <button type="submit" name="start" value="start" class="btn btn-success">Start event</button>
-                </div>
-            {% endif %}
-        </form>
+        {% if not start %}
+            <form method="POST" class="mb-3 text-center">
+                <button type="submit" name="start" value="start" class="btn btn-success px-5 py-2" style="font-weight:600; font-size:1.15rem;">
+                    <i class="bi bi-calendar-plus me-2"></i>Start New Event
+                </button>
+            </form>
+        {% endif %}
     {% else %}
-        <div class="alert alert-info" role="alert">
-            <h4 class="alert-heading">To create events you need to be registrated</h4>
-            <p>To create events you need to be registrate or login.</p>
+        <div class="alert alert-info mt-3 mb-4 text-center" role="alert">
+            <h4 class="alert-heading mb-2">Registration Required</h4>
+            <div>To create events you need to be registered or logged in.</div>
         </div>
     {% endif %}
 
     {% if start %}
     <form method="POST" id="create_event_form">
-        <div class="card mb-3">
+        <div class="event-main-card mb-4">
             <div class="card-header">
-                <h5 class="mb-0">Create new event</h5>
-                <div class="text-end">
-                    <button type="submit" name="start" value="close" class="btn btn-danger my_button">X</button>
-                </div>
+                <h5>Create New Event</h5>
+                <button type="submit" name="start" value="close" class="btn btn-danger my_button" title="Close">&times;</button>
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="name_event" class="form-label">Name event</label>
+                    <label for="name_event" class="form-label">Event Name</label>
                     <input
                         type="text"
                         class="form-control"
                         id="name_event"
                         name="name_event"
-                        placeholder="Type name game event:">
+                        placeholder="Type event name..." required>
                 </div>
 
                 <div class="mb-3">
@@ -62,26 +177,28 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="start_date" class="form-label">Choose data start</label>
+                        <label for="start_date" class="form-label">Start Date</label>
                         <input
                             type="date"
                             class="form-control"
                             id="start_date"
-                            name="start_date">
+                            name="start_date"
+                            required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="end_date" class="form-label">Choose data end</label>
+                        <label for="end_date" class="form-label">End Date</label>
                         <input
                             type="date"
                             class="form-control"
                             id="end_date"
-                            name="end_date">
+                            name="end_date"
+                            required>
                     </div>
                 </div>
 
                 <div class="text-end">
-                    <button type="submit" name="start" value="create" class="btn btn-success">
-                        Create
+                    <button type="submit" name="start" value="create" class="btn btn-success px-5 py-2">
+                        <i class="bi bi-plus-circle me-2"></i>Create
                     </button>
                 </div>
             </div>
@@ -90,17 +207,17 @@
     {% endif %}
 
     {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
+        <div class="alert alert-danger mb-3 text-center">{{ error }}</div>
     {% endif %}
 
     {% if events %}
         <div class="mt-4">
-            <h5>List event</h5>
+            <h5 style="color:#ffd700;font-weight:bold;letter-spacing:.04em;margin-bottom:.9rem;">List of Events</h5>
             <ul class="list-group">
                 {% for name, date in events %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <a href="/event-{{ name }}">{{ name }}</a>
-                        <span class="badge bg-primary rounded-pill">{{ date }}</span>
+                        <span class="badge">{{ date }}</span>
                     </li>
                 {% endfor %}
             </ul>

@@ -3,69 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS & Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-     <style>
+    <style>
       html, body {
         height: 100%;
+        background: linear-gradient(120deg, #241c37 0%, #312a53 100%);
+        color: #e4e1f0;
       }
       body {
         display: flex;
         flex-direction: column;
+        min-height: 100vh;
       }
       main {
-        flex: 1 0 auto; /* розтягуємо головний вміст */
+        flex: 1 0 auto;
+      }
+      .navbar {
+        background: linear-gradient(80deg, #2d2344 60%, #4e4376 100%) !important;
+        box-shadow: 0 4px 20px #1a123930;
+      }
+      .navbar .navbar-brand {
+        font-weight: bold;
+        font-size: 1.55rem;
+        letter-spacing: .04em;
+        color: #ffd700 !important;
+        text-shadow: 0 2px 8px #ffd70015;
+      }
+      .navbar .nav-link {
+        color: #eee !important;
+        font-weight: 500;
+        font-size: 1.08rem;
+        margin-right: .3rem;
+        transition: color .14s;
+      }
+      .navbar .nav-link.active,
+      .navbar .nav-link:hover {
+        color: #ffd700 !important;
+        text-shadow: 0 2px 6px #ffd70044;
+      }
+      .navbar-toggler {
+        border-color: #ffd700;
       }
       footer {
-        flex-shrink: 0; /* футер залишається «прикоріненим» знизу */
+        flex-shrink: 0;
+        background: linear-gradient(90deg, #2d2344 0%, #4e4376 100%);
+        color: #cfcfd6;
+        box-shadow: 0 -2px 12px #1a123930;
+      }
+      footer .container {
+        padding-top: .8rem;
+        padding-bottom: .5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      footer span,
+      footer a {
+        color: #ffd700cc !important;
+      }
+      footer a:hover {
+        color: #fff;
+        text-shadow: 0 1px 6px #ffd70066;
+      }
+      .footer-icons .bi {
+        font-size: 1.45rem;
+        margin-left: 1rem;
+      }
+      /* Scrollbar stylization for cool effect */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #372e57;
+        border-radius: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #201a32;
       }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand" href="/">PovidloGames</a>
-            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="menu">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="/">Main</a></li>
-                <li class="nav-item"><a class="nav-link" href="/games-events">Games</a></li>
-                {% if session.get('username') %}
-                <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-                {% else %}
-                <li class="nav-item"><a class="nav-link" href="/register">Registration</a></li>
-                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                {% endif %}
-
-            </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Main</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('games.games_gallery') }}">Games</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/games-events">Events</a></li>
+                    {% if session.get('username') %}
+                    <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="/register">Registration</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
 
     <main>
-        {% block content %} {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-light py-3" id="contacts">
-        <div class="container text-center">
-            <div class="col-md-4 d-flex align-items-center">
-              <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
-                <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
-              </a>
-              <span class="mb-3 mb-md-0 text-body-secondary">© Yaroslav</span>
+    <footer class="py-3">
+        <div class="container text-center justify-content-between">
+            <div class="d-inline-flex align-items-center">
+                <a href="/" class="me-2 text-decoration-none">
+                    <i class="bi bi-controller"></i>
+                </a>
+                <span>© PovidloGames, Yaroslav</span>
             </div>
-
-            <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-              <li class="ms-3"><a class="text-body-secondary" href="https://t.me/YaroslavDa"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"><i class="bi bi-telegram"></i></use></svg></a></li>
-              <li class="ms-3"><a class="text-body-secondary" href="https://www.instagram.com/yarodani3/"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"><i class="bi bi-instagram"></i></use></svg></a></li>
-            </ul>
+            <div class="footer-icons d-inline-flex">
+                <a href="https://t.me/YaroslavDa" target="_blank"><i class="bi bi-telegram"></i></a>
+                <a href="https://www.instagram.com/yarodani3/" target="_blank"><i class="bi bi-instagram"></i></a>
+            </div>
         </div>
     </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
